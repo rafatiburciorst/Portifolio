@@ -1,0 +1,30 @@
+{
+  "name": "portifolio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/cors": "^8.4.1",
+    "@fastify/multipart": "^8.0.0",
+    "@fastify/static": "^6.12.0",
+    "@fastify/view": "^8.2.0",
+    "axios": "^1.6.0",
+    "dayjs": "^1.11.10",
+    "dotenv": "^16.3.1",
+    "fastify": "^4.24.3",
+    "handlebars": "^4.7.8",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.9",
+    "tsx": "^3.14.0",
+    "typescript": "^5.2.2"
+  }
+}
