@@ -55,19 +55,43 @@ export class Controller {
     }
 
     static async contact(request: FastifyRequest, reply: FastifyReply) {
-        // const schema = z.object({
-        //     name: z.string().min(3),
-        //     email: z.string().email(),
-        //     subject: z.string().min(3),
-        //     message: z.string().min(3).max(100)
-        // })
+        const parts = request.parts()
+        let data
+        for await (const part of parts) {
+            if (part.type === 'file') {
 
-        // const contact = schema.parse(request.body)
+            } else {
+                data = part.fields
+            }
+        }
+        
+        const schema = z.object({
+            name: z.object({ value: z.string().min(1).max(50) }),
+            email: z.object({ value: z.string().min(1).max(50).email() }),
+            subject: z.object({ value: z.string().min(1).max(50) }),
+            message: z.object({ value: z.string().min(1).max(50) })
+        })
 
-        // console.log(contact)
+        const isValid = await schema.safeParseAsync(data)
 
-        console.log(request);
-        reply.status(201).send()
+        if (!isValid.success) {
+            return reply.status(400).send({
+                message: isValid.error.formErrors.fieldErrors
+            })
+        }
+
+        const { email, message, name, subject } = isValid.data
+
+        const objectContact = {
+            name: name.value,
+            email: email.value,
+            message: message.value,
+            subject: subject.value
+        }
+
+        reply.status(201).send({
+            data: objectContact
+        })
         
      }
 }
