@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import dayjs from 'dayjs'
 import { z } from 'zod'
+import { Mailer } from '../../lib/nodemailer'
 
 export class Controller {
 
@@ -64,7 +65,7 @@ export class Controller {
                 data = part.fields
             }
         }
-        
+
         const schema = z.object({
             name: z.object({ value: z.string().min(1).max(50) }),
             email: z.object({ value: z.string().min(1).max(50).email() }),
@@ -82,6 +83,8 @@ export class Controller {
 
         const { email, message, name, subject } = isValid.data
 
+        const mail = new Mailer()
+
         const objectContact = {
             name: name.value,
             email: email.value,
@@ -89,9 +92,20 @@ export class Controller {
             subject: subject.value
         }
 
-        reply.status(201).send({
-            data: objectContact
-        })
-        
-     }
+        try {
+            await mail.sendMail({
+                ...objectContact
+            })
+            return reply.status(201).send({
+                message: 'success'
+            })
+        } catch (error: any) {
+            return reply.status(400).send({
+                message: error.message
+            })
+        }
+
+
+
+    }
 }
